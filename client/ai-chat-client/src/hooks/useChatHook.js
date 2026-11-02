@@ -67,86 +67,90 @@ export const useChatHook = () => {
 
     const token = localStorage.getItem("access_token");
     console.log(token);
-    const response = await fetch(`/api/chat/send_message`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
+    try {
+      const response = await fetch(`/api/chat/send_message`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
 
-        ...(token && { Authorization: `Bearer ${token}` }),
-      },
-      body: JSON.stringify({
-        conversation_id: conversation_id,
-        message: userText,
-      }),
-    });
-
-    console.log("response received");
-
-    const reader = response.body.getReader();
-    const decoder = new TextDecoder();
-
-    let buffer = "";
-    let assistantResponse = "";
-    let assistantId = null;
-
-    while (true) {
-      const { value, done } = await reader.read();
-
-      if (done) {
-        break;
-      }
-
-      buffer += decoder.decode(value, {
-        stream: true,
+          ...(token && { Authorization: `Bearer ${token}` }),
+        },
+        body: JSON.stringify({
+          conversation_id: conversation_id,
+          message: userText,
+        }),
       });
 
-      const events = buffer.split("\n\n");
+      console.log("response received");
 
-      // Keep incomplete event for the next chunk
-      buffer = events.pop() || "";
+      const reader = response.body.getReader();
+      const decoder = new TextDecoder();
 
-      for (const event of events) {
-        if (!event.startsWith("data: ")) {
-          continue;
+      let buffer = "";
+      let assistantResponse = "";
+      let assistantId = null;
+
+      while (true) {
+        const { value, done } = await reader.read();
+
+        if (done) {
+          break;
         }
 
-        const data = JSON.parse(event.slice(6));
-        console.log(data);
+        buffer += decoder.decode(value, {
+          stream: true,
+        });
 
-        if (data.type === "start") {
-          assistantId = data.id;
-          setConversations((prev) => [
-            ...prev,
-            {
-              id: data.id,
-              conversation_id: data.conversation_id,
-              role: "assistant",
-              content: "",
-              created_date: data.created_date,
-            },
-          ]);
-        }
+        const events = buffer.split("\n\n");
 
-        if (data.type === "content") {
-          setIsloading(false);
-          assistantResponse += data.content;
+        // Keep incomplete event for the next chunk
+        buffer = events.pop() || "";
 
-          setConversations((prev) =>
-            prev.map((msg) =>
-              msg.id === assistantId
-                ? {
-                    ...msg,
-                    content: assistantResponse,
-                  }
-                : msg,
-            ),
-          );
-        }
+        for (const event of events) {
+          if (!event.startsWith("data: ")) {
+            continue;
+          }
 
-        if (data.type === "complete") {
-          console.log("AI MESSAGE COMPLETE:", data);
+          const data = JSON.parse(event.slice(6));
+          console.log(data);
+
+          if (data.type === "start") {
+            assistantId = data.id;
+            setConversations((prev) => [
+              ...prev,
+              {
+                id: data.id,
+                conversation_id: data.conversation_id,
+                role: "assistant",
+                content: "",
+                created_date: data.created_date,
+              },
+            ]);
+          }
+
+          if (data.type === "content") {
+            setIsloading(false);
+            assistantResponse += data.content;
+
+            setConversations((prev) =>
+              prev.map((msg) =>
+                msg.id === assistantId
+                  ? {
+                      ...msg,
+                      content: assistantResponse,
+                    }
+                  : msg,
+              ),
+            );
+          }
+
+          if (data.type === "complete") {
+            console.log("AI MESSAGE COMPLETE:", data);
+          }
         }
       }
+    } catch (error) {
+      console.error("Error sending message:", error);
     }
   };
 

@@ -28,7 +28,6 @@ async def start_converstation(db: Session = Depends(get_db)):
 
 @router.post('/send_message')
 async def send_message(message: ChatRequest, db: Session = Depends(get_db), current_user: User | None = Depends(get_optional_current_user)):
-
     return await chat_services.process_message(db, message, current_user)
 
 @router.get('/conversation/{id}', response_model=Conversations)

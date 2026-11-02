@@ -214,13 +214,25 @@ async def process_message(
     )
 
 
+# def build_rag_context(retrieved_chunks: list) -> str:
+
+#     return "\n\n".join(
+#         (
+#             f"SOURCE DOCUMENT: {item['chunk'].document_name}\n"
+#             f"CHUNK INDEX: {item['chunk'].chunk_index}\n\n"
+#             f"{item['chunk'].content}"
+#         )
+#         for item in retrieved_chunks
+#     )
+
+
 def build_rag_context(retrieved_chunks: list) -> str:
 
     return "\n\n".join(
         (
-            f"SOURCE DOCUMENT: {item['chunk'].document_name}\n"
-            f"CHUNK INDEX: {item['chunk'].chunk_index}\n\n"
-            f"{item['chunk'].content}"
+            f"SOURCE DOCUMENT: {item['chunk']['document_name']}\n"
+            f"CHUNK INDEX: {item['chunk']['chunk_index']}\n\n"
+            f"{item['chunk']['content']}"
         )
         for item in retrieved_chunks
     )

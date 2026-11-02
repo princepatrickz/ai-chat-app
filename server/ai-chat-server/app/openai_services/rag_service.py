@@ -1,4 +1,3 @@
-from datetime import datetime, timezone
 from importlib.resources import path
 from os import path
 from pathlib import Path
@@ -9,14 +8,10 @@ from sqlalchemy import func, select
 from app.models.documents import Documents
 from app.models.document_chunks import DocumentChunk
 from app.openai_services.llm_service import create_embedding
-from app.schemas.document_schema import DocumentResponse
 import logging
-from redis.asyncio import Redis
 import hashlib
-import os
-from uuid import UUID
+import time
 import json
-from typing import Any
 from app.openai_services.cache_service import (
     get_cache,
     set_cache,
@@ -269,6 +264,62 @@ def reciprocal_rank_fusion(
     )
 
 
+# async def retrieve_context(
+#     db: Session,
+#     question: str,
+#     top_k: int = 5,
+# ):
+#     # 1. Fetch knowledge-base version
+#     index_version = await get_index_version()
+#     cache_key = None
+
+#     # 2. Attempt Cache Retrieval
+#     if index_version is not None:
+#         cache_key = build_retrieval_cache_key(
+#             question=question,
+#             top_k=top_k,
+#             index_version=index_version,
+#         )
+
+#         cached_results = await get_retrieval_cache(cache_key)
+
+#         # FAST PATH: Instant Return from Redis (No DB Query!)
+#         if cached_results is not None:
+#             return cached_results
+
+#     # 3. CACHE MISS: Run Hybrid DB Retrieval
+#     vector_results = await vector_search(db=db, query=question, top_k=10)
+#     keyword_results = keyword_search(db=db, query=question, top_k=10)
+
+#     combined_results = reciprocal_rank_fusion(
+#         vector_results=vector_results,
+#         keyword_results=keyword_results,
+#     )
+
+#     final_results = combined_results[:top_k]
+
+#     # 4. Store Complete Payload in Cache (including text & metadata)
+#     if cache_key is not None:
+#         serialized_results = [
+#             {
+#                 # Extract text & metadata into serializable dicts
+#                 "chunk": {
+#                     "id": str(item["chunk"].id),
+#                     "content": item["chunk"].content,
+#                     "metadata": item["chunk"].metadata,
+#                 },
+#                 "rrf_score": item["rrf_score"],
+#                 "vector_score": item["vector_score"],
+#                 "vector_rank": item["vector_rank"],
+#                 "keyword_rank": item["keyword_rank"],
+#             }
+#             for item in final_results
+#         ]
+
+#         await set_retrieval_cache(cache_key, serialized_results)
+
+#     return final_results
+
 async def retrieve_context(
     db: Session,
     question: str,
@@ -278,7 +329,7 @@ async def retrieve_context(
     index_version = await get_index_version()
     cache_key = None
 
-    # 2. Attempt Cache Retrieval
+    # 2. Attempt cache retrieval
     if index_version is not None:
         cache_key = build_retrieval_cache_key(
             question=question,
@@ -287,14 +338,22 @@ async def retrieve_context(
         )
 
         cached_results = await get_retrieval_cache(cache_key)
-
-        # FAST PATH: Instant Return from Redis (No DB Query!)
+        
         if cached_results is not None:
             return cached_results
 
-    # 3. CACHE MISS: Run Hybrid DB Retrieval
-    vector_results = await vector_search(db=db, query=question, top_k=10)
-    keyword_results = keyword_search(db=db, query=question, top_k=10)
+    # 3. Run hybrid database retrieval
+    vector_results = await vector_search(
+        db=db,
+        query=question,
+        top_k=10,
+    )
+
+    keyword_results = keyword_search(
+        db=db,
+        query=question,
+        top_k=10,
+    )
 
     combined_results = reciprocal_rank_fusion(
         vector_results=vector_results,
@@ -303,30 +362,32 @@ async def retrieve_context(
 
     final_results = combined_results[:top_k]
 
-    # 4. Store Complete Payload in Cache (including text & metadata)
+    # 4. Normalize results into dictionaries
+    normalized_results = [
+        {
+            "chunk": {
+                "id": str(item["chunk"].id),
+                "document_id": str(item["chunk"].document_id),
+                "document_name": item["chunk"].document_name,
+                "chunk_index": item["chunk"].chunk_index,
+                "content": item["chunk"].content,
+            },
+            "rrf_score": item["rrf_score"],
+            "vector_score": item["vector_score"],
+            "vector_rank": item["vector_rank"],
+            "keyword_rank": item["keyword_rank"],
+        }
+        for item in final_results
+    ]
+
+    # 5. Store normalized results in Redis
     if cache_key is not None:
-        serialized_results = [
-            {
-                # Extract text & metadata into serializable dicts
-                "chunk": {
-                    "id": str(item["chunk"].id),
-                    "content": item["chunk"].content,
-                    "metadata": item["chunk"].metadata,
-                },
-                "rrf_score": item["rrf_score"],
-                "vector_score": item["vector_score"],
-                "vector_rank": item["vector_rank"],
-                "keyword_rank": item["keyword_rank"],
-            }
-            for item in final_results
-        ]
+        await set_retrieval_cache(
+            cache_key,
+            normalized_results,
+        )
 
-        await set_retrieval_cache(cache_key, serialized_results)
-
-    return final_results
-
-
-import time
+    return normalized_results
 
 _INDEX_VERSION_CACHE = {"version": "1", "expires_at": 0}
 

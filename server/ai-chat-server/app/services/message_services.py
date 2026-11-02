@@ -51,7 +51,7 @@ async def save_message_retrievals(db: Session, message_id, retrieved_results: li
 
         retrieval = MessageRetrievals(
             message_id=message_id,
-            chunk_id=result["chunk"].id,
+            chunk_id=result["chunk"]['id'],
             rank=rank,
             rrf_score=result["rrf_score"],
             vector_score=result.get("vector_score"),

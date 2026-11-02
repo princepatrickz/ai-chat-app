@@ -1,4 +1,5 @@
-// Home.module.scss
+@use "sass:color";
+
 $primary-red: #d32f2f;
 $dark-red: #8b0000;
 $blue-accent: #0288d1;
@@ -109,7 +110,7 @@ $text-muted: #6b7280;
       transition: all 0.2s ease;
 
       &:hover {
-        background-color: lighten($blue-accent, 5%);
+        background-color: color.adjust($blue-accent, $lightness: 5%);
         transform: translateY(-2px);
       }
     }
