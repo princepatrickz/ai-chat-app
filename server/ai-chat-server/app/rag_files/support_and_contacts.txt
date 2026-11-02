@@ -1,0 +1,16 @@
+Fintech Customer Support Knowledge Base
+Topic: Customer Support
+
+## Support hours
+- Live customer support is available Monday through Friday, 9:00 AM to 6:00 PM Philippine Time (PHT).
+- Support may have different hours during public holidays.
+
+## Contacting support
+- Customers can contact support through Hotline: (02) 8250 4848 or support portal .
+- Transaction-related requests should include the transaction reference when available.
+- Customers should never include passwords, OTPs, PINs, or full card security information in a support request.
+
+## Security
+- Support representatives will never ask customers to reveal their password, OTP, PIN, or full card security code.
+- Customers should use only official support channels.
+- If a customer receives a suspicious message claiming to be from the fintech company, they should report it through the official support channel.

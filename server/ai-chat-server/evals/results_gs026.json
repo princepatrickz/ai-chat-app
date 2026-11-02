@@ -1,0 +1,109 @@
+{
+  "run_timestamp_utc": "2026-10-26T01:38:55Z",
+  "dataset_path": "evals/golden_dataset.json",
+  "case_count": 1,
+  "latency_ms": {
+    "p50": 8349.51,
+    "p95": 8349.51
+  },
+  "summary": {
+    "FaithfulnessMetric": {
+      "mean_score": 1.0,
+      "n_scored": 1
+    },
+    "AnswerRelevancyMetric": {
+      "mean_score": 0.0,
+      "n_scored": 1
+    },
+    "ContextualPrecisionMetric": {
+      "mean_score": 1.0,
+      "n_scored": 1
+    },
+    "ContextualRecallMetric": {
+      "mean_score": 1.0,
+      "n_scored": 1
+    }
+  },
+  "cases": [
+    {
+      "id": "GS-026",
+      "question": "What is the exact phone number for support?",
+      "reference_answer": "The knowledge base provides the official mobile application and support portal as contact channels, but it does not specify a phone number.",
+      "actual_answer": "I don't have enough information in my knowledge base to provide an exact support phone number. You can contact support through the official mobile application or support portal. Live support is available Monday through Friday, 9:00 AM to 6:00 PM Philippine Time, though hours may vary on public holidays.",
+      "retrieved_contexts": [
+        "Topic: Contacting support\n\n            - Customers can contact support through the official mobile application or support portal.\n- Transaction-related requests should include the transaction reference when available.\n- Customers should never include passwords, OTPs, PINs, or full card security information in a support request.",
+        "Topic: Support hours\n\n            - Live customer support is available Monday through Friday, 9:00 AM to 6:00 PM Philippine Time (PHT).\n- Support may have different hours during public holidays.",
+        "Topic: Security\n\n            - Support representatives will never ask customers to reveal their password, OTP, PIN, or full card security code.\n- Customers should use only official support channels.\n- If a customer receives a suspicious message claiming to be from the fintech company, they should report it through the official support channel.",
+        "Topic: Transfer pending\n\n            - If a transfer remains pending beyond the estimated processing period shown in the app, contact support.\n- Support may request the transaction reference number.",
+        "Topic: Card payment dispute\n\n            - Customers should report an unauthorized card transaction as soon as possible.\n- Support may request the transaction date, amount, merchant name, and other verification information.\n- Customers should never provide their full card PIN or account password to support."
+      ],
+      "retrieved_sources": [
+        {
+          "document_name": "support_and_contacts.txt",
+          "chunk_id": "e8667b41-7591-4d1d-afe1-9d8a5e91dee5",
+          "score": 0.01639344262295082
+        },
+        {
+          "document_name": "support_and_contacts.txt",
+          "chunk_id": "17b09c25-d24e-4adb-9434-fd22bf95c856",
+          "score": 0.016129032258064516
+        },
+        {
+          "document_name": "support_and_contacts.txt",
+          "chunk_id": "1f8e7262-c021-421d-b5ee-735d7a223091",
+          "score": 0.015873015873015872
+        },
+        {
+          "document_name": "money_transfers.txt",
+          "chunk_id": "d1b37e02-f072-4467-b5ac-423b02c3cc92",
+          "score": 0.015625
+        },
+        {
+          "document_name": "card_services.txt",
+          "chunk_id": "9a3fab1e-ffee-463d-8281-2b5edaaca087",
+          "score": 0.015384615384615385
+        }
+      ],
+      "latency_ms": 8349.51,
+      "answerable": true,
+      "source_files": [
+        "support_and_contacts.txt"
+      ],
+      "expected_evidence": "Ground answer in the named source file(s).",
+      "tags": [
+        "exact_detail",
+        "unsupported_detail"
+      ],
+      "review_status": "REVIEWED AGAINST INCLUDED FICTIONAL KB"
+    }
+  ],
+  "metric_details": [
+    {
+      "id": "GS-026",
+      "question": "What is the exact phone number for support?",
+      "metrics": {
+        "FaithfulnessMetric": {
+          "score": 1.0,
+          "success": true,
+          "reason": "The score is 1.00 because there are no contradictions present, indicating a perfect alignment between the actual output and the retrieval context. Great job maintaining consistency!"
+        },
+        "AnswerRelevancyMetric": {
+          "score": 0.0,
+          "success": false,
+          "reason": "The score is 0.00 because the output failed to provide the exact phone number for support, which was the primary request in the input. Instead, it included irrelevant information about alternative contact methods and availability without addressing the specific query."
+        },
+        "ContextualPrecisionMetric": {
+          "score": 1.0,
+          "success": true,
+          "reason": "The score is 1.00 because the relevant node, ranked first, clearly states that 'Customers can contact support through the official mobile application or support portal,' which aligns perfectly with the input query. The irrelevant nodes, ranked lower, discuss topics such as 'Support hours,' 'Security,' 'Transfer pending,' and 'Card payment dispute,' none of which provide the requested phone number information. This precise ranking ensures that the most relevant information is prioritized, resulting in a perfect score."
+        },
+        "ContextualRecallMetric": {
+          "score": 1.0,
+          "success": true,
+          "reason": "The score is 1.00 because the expected output perfectly aligns with the information in the nodes in the retrieval context, confirming the contact channels without mentioning a phone number. Great job!"
+        }
+      }
+    }
+  ],
+  "note": "LLM-as-judge scores require manual spot-checking; these results are not a substitute for factual review."
+}

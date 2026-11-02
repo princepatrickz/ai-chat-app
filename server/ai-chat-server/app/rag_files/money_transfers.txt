@@ -1,0 +1,32 @@
+Fintech Customer Support Knowledge Base
+Topic: Money Transfers
+
+## Sending money
+- Customers can initiate transfers from the Transfers section of the application.
+- Before confirming a transfer, customers should verify the recipient name, account number or identifier, amount, and destination.
+- A transfer cannot always be canceled after it has been submitted.
+
+## Transfer status
+- A transfer may show statuses such as Pending, Completed, Failed, or Reversed.
+- Pending transfers are still being processed.
+- Completed transfers have been successfully processed according to the transaction status.
+- Failed transfers were not successfully processed.
+- Reversed transfers were returned or canceled after processing.
+
+## Transfer pending
+- If a transfer remains pending beyond the estimated processing period shown in the app, contact support.
+- Support may request the transaction reference number.
+
+## Wrong recipient
+- Customers should verify recipient information before confirming a transfer.
+- If money was sent to the wrong recipient, contact support as soon as possible.
+- Recovery is not guaranteed because the ability to reverse a transfer depends on its processing status and applicable rules.
+
+## Transfer limits
+- Daily and monthly transfer limits may apply.
+- Limits can depend on account status, verification level, transfer type, and applicable risk controls.
+
+## Canceling transfer
+- A transfer cannot always be canceled after it has been submitted.
+- If a customer needs help with a submitted transfer, they should contact support as soon as possible.
+- Cancellation is not guaranteed.

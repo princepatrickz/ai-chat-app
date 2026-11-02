@@ -1,0 +1,22 @@
+Fintech Customer Support Knowledge Base
+Topic: Accounts and Registration
+
+## Opening an account
+- Customers can create a personal account through the mobile app.
+- A valid email address and mobile phone number are required.
+- Customers must complete identity verification before using certain financial services.
+- One person should not create multiple personal accounts unless specifically permitted by the company.
+
+## Identity verification
+- Customers may be asked to provide their full name, date of birth, residential address, government-issued identification, and a selfie.
+- Verification normally takes a few minutes, but manual review can take up to 2 business days.
+- A verification request may be rejected if the submitted information is unclear, expired, incomplete, or inconsistent.
+
+## Changing personal information
+- Customers can update certain profile information from Settings > Personal Information.
+- Changes to sensitive information may require additional identity verification.
+- Customers should contact support if they cannot update their information in the app.
+
+## Account closure
+- Customers can request account closure through the support center.
+- Pending transactions, unresolved disputes, or remaining balances may need to be completed before an account can be closed.

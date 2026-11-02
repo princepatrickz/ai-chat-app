@@ -1,0 +1,20 @@
+Fintech Customer Support Knowledge Base
+Topic: Refunds and Reversals
+
+## Merchant refund
+- A merchant may issue a refund for an eligible card purchase.
+- Once the merchant processes the refund, it may take several business days to appear in the customer's account.
+- Customers should retain the merchant's refund confirmation when available.
+
+## Reversed transaction
+- A reversed transaction means a transaction that was previously authorized or processed has been returned or canceled.
+- The returned amount may take additional processing time before becoming available.
+
+## Pending card transaction
+- A pending card transaction may represent an authorization that has not yet been finalized.
+- Some pending authorizations disappear automatically if the merchant does not complete the transaction.
+- If a pending transaction remains for an unusually long period, contact support.
+
+## Refund not received
+- If a merchant confirms a refund but the funds have not appeared after the expected processing period, contact support.
+- Provide the merchant refund reference or transaction details when available.

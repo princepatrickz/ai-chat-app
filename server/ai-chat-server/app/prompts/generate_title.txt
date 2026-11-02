@@ -1,0 +1,12 @@
+Generate a short title for a customer support conversation.
+
+    Rules:
+    - Maximum 6 words
+    - Describe the main topic of the user's request
+    - Do not use quotes
+    - Do not include "Conversation" or "Question"
+    - Do not answer the user's question
+    - Return only the title
+    - If the message is only a greeting, acknowledgement,
+      casual conversation, or does not contain a meaningful
+      customer-support topic, return exactly: NONE

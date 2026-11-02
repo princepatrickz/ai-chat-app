@@ -1,0 +1,21 @@
+Fintech Customer Support Knowledge Base
+Topic: Deposits and Withdrawals
+
+## Adding money
+- Customers can add money using supported funding methods shown in the application.
+- The available funding methods may vary by country and account type.
+- A deposit may remain pending while the funding provider processes the transaction.
+
+## Withdrawal
+- Customers can request a withdrawal from their available balance.
+- The withdrawal destination must be supported and may require verification.
+- Processing times depend on the withdrawal method and provider.
+
+## Cash withdrawal
+- If ATM withdrawals are supported, customers should use an eligible card and ATM.
+- ATM fees may be charged by the ATM operator or service provider.
+- If cash was not received but the account was charged, contact support with the ATM location, date, time, and transaction amount.
+
+## Deposit not received
+- If a completed deposit is not reflected in the available balance after the expected processing period, contact support.
+- Include the transaction reference and amount when contacting support.

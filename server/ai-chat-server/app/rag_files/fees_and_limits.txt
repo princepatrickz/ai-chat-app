@@ -1,0 +1,20 @@
+Fintech Customer Support Knowledge Base
+Topic: Fees and Transaction Limits
+
+## Transaction fees
+- Some financial services may have service fees.
+- Applicable fees are displayed in the application before a transaction is confirmed whenever possible.
+- Fees may vary depending on the transaction type, destination, currency, account type, and payment method.
+
+## Transfer limits
+- Transfer limits may apply on a per-transaction, daily, or monthly basis.
+- Customers can view applicable limits in the application when the feature is available.
+- A transaction may be declined if it exceeds an applicable limit.
+
+## ATM fees
+- ATM operators may charge their own fees.
+- Any applicable fintech service fee is separate from an ATM operator fee.
+
+## Currency conversion
+- Currency conversion may involve an exchange rate and, depending on the service, an additional fee or markup.
+- The applicable rate and charges should be reviewed before confirming a foreign-currency transaction.

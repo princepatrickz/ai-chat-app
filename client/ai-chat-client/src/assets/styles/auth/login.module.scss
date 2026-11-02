@@ -1,0 +1,170 @@
+// MYEG Brand Theme Colors
+$myeg-red: #c51e2e;
+$myeg-red-hover: #a81825;
+$myeg-dark-red: #8b101c;
+$bg-gradient-start: #f8fafc;
+$bg-gradient-end: #f1f5f9;
+$card-bg: #ffffff;
+$text-main: #0f172a;
+$text-muted: #64748b;
+$border-color: #cbd5e1;
+$error-bg: #fef2f2;
+$error-text: #dc2626;
+$error-border: #fecaca;
+
+.container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(
+    135deg,
+    $bg-gradient-start 0%,
+    $bg-gradient-end 100%
+  );
+  padding: 1.5rem;
+  font-family:
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    sans-serif;
+}
+
+.form {
+  background: $card-bg;
+  width: 100%;
+  max-width: 420px;
+  padding: 2.5rem 2rem;
+  border-radius: 16px;
+  box-shadow:
+    0 10px 25px -5px rgba(15, 23, 42, 0.08),
+    0 8px 10px -6px rgba(15, 23, 42, 0.04);
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+
+  .form-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.5rem;
+
+    .form-header-icon {
+      font-size: 2.75rem;
+      color: $myeg-red;
+    }
+
+    h4 {
+      margin: 0;
+      font-size: 1.65rem;
+      font-weight: 700;
+      color: $text-main;
+      letter-spacing: -0.025em;
+    }
+  }
+
+  .controls {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 0.875rem;
+    margin-top: -0.25rem;
+
+    .checkbox {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: $text-muted;
+      cursor: pointer;
+
+      input[type="checkbox"] {
+        width: 16px;
+        height: 16px;
+        accent-color: $myeg-red;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+
+      label {
+        cursor: pointer;
+        user-select: none;
+        text-transform: capitalize;
+      }
+    }
+
+    a {
+      color: $myeg-red;
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.15s ease;
+
+      &:hover {
+        color: $myeg-dark-red;
+        text-decoration: underline;
+      }
+    }
+  }
+
+  button {
+    width: 100%;
+    padding: 0.85rem 1rem;
+    background: linear-gradient(135deg, $myeg-red 0%, $myeg-dark-red 100%);
+    color: #ffffff;
+    font-size: 0.95rem;
+    font-weight: 600;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(197, 30, 46, 0.25);
+    transition:
+      filter 0.2s ease,
+      transform 0.1s ease,
+      box-shadow 0.2s ease;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    &:hover:not(:disabled) {
+      filter: brightness(1.08);
+      box-shadow: 0 6px 16px rgba(197, 30, 46, 0.35);
+    }
+
+    &:active:not(:disabled) {
+      transform: translateY(1px);
+    }
+
+    &:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+    }
+  }
+
+  .form-footer {
+    .error-container {
+      display: flex;
+      align-items: center;
+      gap: 0.625rem;
+      padding: 0.75rem 1rem;
+      background-color: $error-bg;
+      border: 1px solid $error-border;
+      border-radius: 8px;
+      color: $error-text;
+      font-size: 0.875rem;
+
+      .error-icons {
+        font-size: 1.25rem;
+        flex-shrink: 0;
+      }
+
+      .error-message {
+        label {
+          line-height: 1.3;
+          margin: 0;
+        }
+      }
+    }
+  }
+}

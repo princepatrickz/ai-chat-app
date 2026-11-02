@@ -1,0 +1,22 @@
+Fintech Customer Support Knowledge Base
+Topic: Login and Account Security
+
+## Forgotten password
+- Select "Forgot Password" on the login screen.
+- Enter the registered email address or mobile number.
+- Follow the password-reset instructions sent by the service.
+- Never share a password or one-time password (OTP) with another person.
+
+## One-time passwords
+- OTPs are used to verify certain login and financial actions.
+- An OTP should only be entered into the official fintech application or website.
+- Support agents will never ask a customer to provide an OTP.
+
+## Account locked
+- An account may be temporarily locked after repeated unsuccessful login attempts.
+- Customers should wait for the lockout period to expire or follow the recovery instructions shown in the application.
+- Customers who believe their account has been compromised should immediately change their password and contact support.
+
+## Suspected account takeover
+- If a customer notices an unfamiliar login, transfer, card transaction, or profile change, they should contact support immediately.
+- Customers should not continue communicating with a person who claims to be support and requests passwords, OTPs, PINs, or full card details.

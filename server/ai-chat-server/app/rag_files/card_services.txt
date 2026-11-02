@@ -1,0 +1,26 @@
+Fintech Customer Support Knowledge Base
+Topic: Debit and Virtual Cards
+
+## Card activation
+- A physical card must be activated before it can normally be used for purchases.
+- Card activation instructions are provided in the mobile application.
+
+## Card payment declined
+- Check that the card is active and has sufficient available balance.
+- Verify that the card has not expired and that the transaction details are correct.
+- Some merchants or transaction types may be restricted.
+- If the problem continues, contact support.
+
+## Lost or stolen card
+- Customers should immediately freeze or lock a lost or stolen card using the mobile application when that feature is available.
+- Customers should then contact support to report the card.
+- A replacement card may be issued according to the applicable replacement policy.
+
+## Card payment dispute
+- Customers should report an unauthorized card transaction as soon as possible.
+- Support may request the transaction date, amount, merchant name, and other verification information.
+- Customers should never provide their full card PIN or account password to support.
+
+## Virtual cards
+- A virtual card can be used for eligible online purchases.
+- Virtual card details should be treated as confidential financial information.

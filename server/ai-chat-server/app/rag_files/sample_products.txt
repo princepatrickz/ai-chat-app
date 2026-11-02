@@ -1,0 +1,21 @@
+Fintech Customer Support Knowledge Base
+Topic: Sample Financial Products
+
+## Flex Account
+- Flex Account is a fictional digital account used for this sample RAG dataset.
+- Customers can hold an available balance and use supported transfer and payment features.
+- Identity verification is required before certain features become available.
+
+## Flex Card
+- Flex Card is a fictional debit card linked to the customer's Flex Account.
+- Customers can use the card for eligible purchases and supported ATM withdrawals.
+- A physical Flex Card requires activation before normal use.
+
+## Flex Transfer
+- Flex Transfer is a fictional money-transfer feature.
+- Customers can send money to supported recipients from the application.
+- Transfer limits and processing times depend on the transaction type and account status.
+
+## Important
+- These products are fictional and exist only for testing the RAG application.
+- Do not treat the sample information as real financial-product terms or financial advice.

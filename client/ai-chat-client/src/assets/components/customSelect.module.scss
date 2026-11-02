@@ -1,0 +1,78 @@
+.input-group {
+  width: 100%;
+  margin: 5px 0;
+}
+
+.mui-select {
+  position: relative;
+  font-family: var(--font);
+}
+
+.mui-select select {
+  width: 100%;
+  padding: 12px 8px;
+  font-size: 14px;
+  border: 1px solid #aaa;
+  border-radius: 4px;
+  outline: none;
+  appearance: none;
+  background: transparent;
+  transition: border-color 0.2s;
+}
+
+/* Arrow icon */
+.mui-select::after {
+  content: "▾";
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  color: #666;
+}
+
+/* 1. Label as Placeholder (Middle State) */
+.mui-select label {
+  position: absolute;
+  left: 8px;
+  top: 12px;
+  color: #777;
+  font-size: 12px;
+  pointer-events: none;
+  transition: 0.2s ease-in-out;
+  padding: 0 4px;
+  background-color: white;
+  background: linear-gradient(to bottom, white 80%, transparent 20%);
+}
+
+/* Move to top ONLY when focused OR when a valid option is selected */
+.mui-select select:focus + label,
+.mui-select select:valid + label {
+  top: 0;
+  transform: translateY(-50%) scale(0.85); // Scales down slightly
+  left: 10px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--mui-primary);
+}
+
+/* Color for label when field has value but is NOT focused */
+.mui-select select:not(:focus):not([value=""]) + label {
+  color: #757575;
+}
+
+.mui-select select:focus {
+  border-color: var(--mui-primary, #1976d2);
+  border-width: 2px;
+  padding: 11px 7px; // Prevents layout jump with 2px border
+}
+
+p {
+  color: red;
+  font-size: 11px;
+  font-style: italic;
+  padding: 0;
+  margin: 0;
+  margin-top: -10px;
+  text-align: left;
+}

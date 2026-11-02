@@ -1,0 +1,56 @@
+.input-group {
+  position: relative;
+  width: 100%;
+  margin: 5px 0;
+}
+
+.input-group input {
+  width: 100%;
+  padding: 12px 8px;
+  font-size: 15px;
+  border: 1px solid #aaa;
+  border-radius: 4px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.input-group label {
+  position: absolute;
+  left: 8px;
+  top: 12px;
+  color: #777;
+  font-size: 12px;
+  pointer-events: none;
+  transition: 0.2s ease-in-out;
+  padding: 0 4px;
+  background-color: white;
+  background: linear-gradient(to bottom, white 80%, transparent 20%);
+}
+
+.input-group input:focus + label,
+.input-group input:not(:placeholder-shown) + label {
+  top: 0;
+  transform: translateY(-50%) scale(0.85); // Scales down slightly
+  left: 10px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--mui-primary);
+}
+
+.input-group .password-toggle-icon {
+  position: absolute;
+  right: 20px;
+  top: 40%;
+  font-size: 18px;
+  cursor: pointer;
+}
+
+p {
+  color: red;
+  font-size: 11px;
+  font-style: italic;
+  padding: 0;
+  margin: 0;
+  margin-top: -5px;
+  text-align: left;
+}

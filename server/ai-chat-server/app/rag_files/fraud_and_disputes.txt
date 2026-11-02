@@ -1,0 +1,21 @@
+Fintech Customer Support Knowledge Base
+Topic: Fraud, Unauthorized Transactions, and Disputes
+
+## Unauthorized transaction
+- Customers should report transactions they do not recognize as soon as possible.
+- Customers should temporarily freeze affected cards or account features when the application provides that option.
+- Support may ask questions to verify the customer's identity and investigate the transaction.
+
+## Fraud warning signs
+- Customers should be cautious of messages requesting passwords, OTPs, PINs, card security codes, or remote access to their device.
+- A legitimate support representative will not ask for a customer's password or OTP.
+- Customers should access the service through the official application or website rather than links received from unknown senders.
+
+## Dispute investigation
+- Support may request transaction details, screenshots, receipts, or other evidence.
+- Investigation time varies depending on transaction type and the information available.
+- A submitted dispute does not automatically guarantee a refund.
+
+## Chargeback
+- Some eligible card transactions may be disputed through a card chargeback process.
+- Eligibility and deadlines depend on the transaction type, payment network, and applicable rules.

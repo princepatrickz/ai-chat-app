@@ -1,0 +1,109 @@
+{
+  "run_timestamp_utc": "2026-10-26T02:12:53Z",
+  "dataset_path": "evals/golden_dataset.json",
+  "case_count": 1,
+  "latency_ms": {
+    "p50": 5252.39,
+    "p95": 5252.39
+  },
+  "summary": {
+    "FaithfulnessMetric": {
+      "mean_score": 1.0,
+      "n_scored": 1
+    },
+    "AnswerRelevancyMetric": {
+      "mean_score": 1.0,
+      "n_scored": 1
+    },
+    "ContextualPrecisionMetric": {
+      "mean_score": 1.0,
+      "n_scored": 1
+    },
+    "ContextualRecallMetric": {
+      "mean_score": 0.6666666666666666,
+      "n_scored": 1
+    }
+  },
+  "cases": [
+    {
+      "id": "GS-015",
+      "question": "What fees will I pay for my transaction?",
+      "reference_answer": "The exact fee for a particular transaction is not available from the knowledge base. Fees may vary by transaction type, destination, currency, account type, and payment method; review the applicable fee in the application before confirming.",
+      "actual_answer": "Fees depend on the transaction type, destination, currency, account type, and payment method. Any applicable fees are shown in the application before you confirm the transaction whenever possible.\n\nFor foreign-currency transactions, an exchange rate and possibly an additional fee or markup may apply. For ATM withdrawals, the ATM operator or service provider may charge a separate fee.",
+      "retrieved_contexts": [
+        "Topic: Transaction fees\n\n            - Some financial services may have service fees.\n- Applicable fees are displayed in the application before a transaction is confirmed whenever possible.\n- Fees may vary depending on the transaction type, destination, currency, account type, and payment method.",
+        "Topic: ATM fees\n\n            - ATM operators may charge their own fees.\n- Any applicable fintech service fee is separate from an ATM operator fee.",
+        "Topic: Currency conversion\n\n            - Currency conversion may involve an exchange rate and, depending on the service, an additional fee or markup.\n- The applicable rate and charges should be reviewed before confirming a foreign-currency transaction.",
+        "Topic: Transfer limits\n\n            - Transfer limits may apply on a per-transaction, daily, or monthly basis.\n- Customers can view applicable limits in the application when the feature is available.\n- A transaction may be declined if it exceeds an applicable limit.",
+        "Topic: Cash withdrawal\n\n            - If ATM withdrawals are supported, customers should use an eligible card and ATM.\n- ATM fees may be charged by the ATM operator or service provider.\n- If cash was not received but the account was charged, contact support with the ATM location, date, time, and transaction amount."
+      ],
+      "retrieved_sources": [
+        {
+          "document_name": "fees_and_limits.txt",
+          "chunk_id": "e0decc77-47d8-4b1d-8cb2-2dcee22aaa6f",
+          "score": 0.01639344262295082
+        },
+        {
+          "document_name": "fees_and_limits.txt",
+          "chunk_id": "b4130000-9577-41da-b30a-f39bd7c1d9fc",
+          "score": 0.016129032258064516
+        },
+        {
+          "document_name": "fees_and_limits.txt",
+          "chunk_id": "976045f5-7347-494c-b329-d35fe637d9ac",
+          "score": 0.015873015873015872
+        },
+        {
+          "document_name": "fees_and_limits.txt",
+          "chunk_id": "57381c76-1ff8-4029-b738-8bbe31c81df8",
+          "score": 0.015625
+        },
+        {
+          "document_name": "deposits_and_withdrawals.txt",
+          "chunk_id": "b6b5464e-db82-45a3-8f1a-188c6bcbb69d",
+          "score": 0.015384615384615385
+        }
+      ],
+      "latency_ms": 5252.39,
+      "answerable": true,
+      "source_files": [
+        "fees_and_limits.txt"
+      ],
+      "expected_evidence": "Ground answer in the named source file(s).",
+      "tags": [
+        "abstention",
+        "personalized"
+      ],
+      "review_status": "REVIEWED AGAINST INCLUDED FICTIONAL KB"
+    }
+  ],
+  "metric_details": [
+    {
+      "id": "GS-015",
+      "question": "What fees will I pay for my transaction?",
+      "metrics": {
+        "FaithfulnessMetric": {
+          "score": 1.0,
+          "success": true,
+          "reason": "The score is 1.00 because there are no contradictions present, indicating a perfect alignment between the actual output and the retrieval context. Great job maintaining consistency!"
+        },
+        "AnswerRelevancyMetric": {
+          "score": 1.0,
+          "success": true,
+          "reason": "The score is 1.00 because the response perfectly addressed the question about transaction fees without any irrelevant information. Great job on staying focused and providing a clear answer!"
+        },
+        "ContextualPrecisionMetric": {
+          "score": 1.0,
+          "success": true,
+          "reason": "The score is 1.00 because the relevant node, ranked first, accurately addresses the input by stating that 'fees may vary depending on the transaction type, destination, currency, account type, and payment method.' This aligns perfectly with the question about transaction fees. The irrelevant nodes, which discuss ATM fees, currency conversion fees, and transfer limits, are appropriately ranked lower, ensuring the most pertinent information is prioritized. Great job on achieving a perfect score!"
+        },
+        "ContextualRecallMetric": {
+          "score": 0.6666666666666666,
+          "success": false,
+          "reason": "The score is 0.67 because while the retrieval context supports the variability of fees and the need to review them in the application (as seen in node 1), it lacks direct support for the unavailability of exact fees in the knowledge base."
+        }
+      }
+    }
+  ],
+  "note": "LLM-as-judge scores require manual spot-checking; these results are not a substitute for factual review."
+}
