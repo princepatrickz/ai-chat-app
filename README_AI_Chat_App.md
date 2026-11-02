@@ -124,6 +124,35 @@ Contextual metrics were scored on the 19 answerable cases. Results are dataset-s
 - Track p50, p95, and maximum latency consistently.
 - Test anonymous/expired-token behavior and cross-user data isolation.
 
+## Limitiations
+
+Infrastructure Constraints: No deployment server is available, and internal company dev/staging environments cannot be used for this project.
+
+Current Implementation: Only two (2) tools are currently implemented:
+
+- get_my_transactions - Retrieves detailed transaction information, including amount, date, and reference number.
+- get_my_transaction_status - Retrieves the status of a customer's transaction.
+
+## For Enchancement
+
+For the next phase, I propose implementing the following tools:
+
+Customer service tools
+
+- get_payment_history - Retrieves a customer's previous transactions with pagination and date filters.
+- get_payment_receipt - Retrieves an existing payment receipt or official proof of payment.
+- get_payment_channels - Returns available payment channels and their instructions.
+- get_payment_instructions - Explains how to complete a payment for a particular partner agency or transaction type.
+- get_transaction_requirements - Explains the requirements or information needed before making a payment.
+
+Transaction problem and troubleshooting tools
+
+- get_payment_failure_reason - Retrieves the recorded reason for a failed transaction, if available.
+- check_payment_settlement - Checks whether payment has been settled or acknowledged by the partner agency.
+- get_refund_status - Retrieves the current status of a refund or reversal request.
+- check_refund_eligibility - Checks whether a transaction meets the configured refund policy.
+- get_reversal_status - Retrieves the status of a payment reversal, if supported by the payment provider.
+
 ## Detailed documentation
 
 See [AI_Chat_App_Technical_Documentation.docx](AI_Chat_App_Technical_Documentation.docx).
