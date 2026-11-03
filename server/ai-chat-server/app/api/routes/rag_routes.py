@@ -1,9 +1,7 @@
 from fastapi import APIRouter, Depends, UploadFile, File, HTTPException, Query
 from sqlalchemy.orm import Session
-from sqlalchemy.ext.asyncio import AsyncSession
 from pathlib import Path
 from app.db import get_db
-from app.schemas.document_schema import DocumentResponse
 from app.schemas.paginated_schema import PaginatedResponse
 from app.services.ai_services import get_documents, ingest_document, get_document_summary, delete_document
 from app.auth.auth import get_current_user

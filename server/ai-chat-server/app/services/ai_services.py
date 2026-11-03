@@ -1,11 +1,9 @@
 from sqlalchemy.orm import Session
-from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, delete, func, or_
 from app.schemas.document_schema import DocumentResponse
 from app.schemas.paginated_schema import PaginatedResponse
 from app.models.documents import Documents
 from app.schemas.summary_schema import SummaryResponse
-from app.schemas.document_chunk_schema import DocumentChunkResponse
 from app.models.document_chunks import DocumentChunk
 from pathlib import Path
 from datetime import datetime, timezone
@@ -217,10 +215,8 @@ async def ingest_document(
     return document.id
 
 
+# Ingest all .txt files from the RAG documents directory.
 async def ingest_all_documents(db: Session):
-    """
-    Ingest all .txt files from the RAG documents directory.
-    """
 
     if not DOCUMENTS_PATH.exists():
         raise FileNotFoundError(
@@ -253,6 +249,7 @@ async def ingest_all_documents(db: Session):
             document_ids.append(document_id)
 
     return document_ids
+
 
 
 ## PRIVATE FUNCTIONS

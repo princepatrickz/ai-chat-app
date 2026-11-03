@@ -2,9 +2,6 @@ from uuid import UUID
 from pydantic import BaseModel, Field, field_validator, ConfigDict
 from datetime import datetime
 
-# class ChatRequest(BaseModel):
-#     conversation_id: UUID
-#     message: str
 
 class ChatResponse(BaseModel):
     id: UUID

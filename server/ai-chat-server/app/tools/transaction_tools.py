@@ -20,21 +20,6 @@ ALLOWED_STATUSES = {
 }
 
 
-def serialize_transaction(transaction: Transaction) -> dict[str, Any]:
-    """
-    Return an explicit allowlist of safe fields.
-    Never serialize the entire ORM object.
-    """
-
-    return {
-        "reference": str(transaction.reference_code),
-        "amount": str(transaction.amount),
-        "currency": str(transaction.currency),
-        "status": str(transaction.status),
-        "transaction_type": str(transaction.transaction_type),
-        "created_at": transaction.created_at.isoformat(),
-    }
-
 
 def get_my_transactions(
     db: Session,
@@ -70,7 +55,7 @@ def get_my_transactions(
         "success": True,
         "count": len(transactions),
         "transactions": [
-            serialize_transaction(transaction)
+            _serialize_transaction(transaction)
             for transaction in transactions
         ],
     }
@@ -112,5 +97,15 @@ def get_my_transaction_status(
 
     return {
         "success": True,
-        "transaction": serialize_transaction(transaction),
+        "transaction": _serialize_transaction(transaction),
+    }
+
+def _serialize_transaction(transaction: Transaction) -> dict[str, Any]:
+    return {
+        "reference": str(transaction.reference_code),
+        "amount": str(transaction.amount),
+        "currency": str(transaction.currency),
+        "status": str(transaction.status),
+        "transaction_type": str(transaction.transaction_type),
+        "created_at": transaction.created_at.isoformat(),
     }

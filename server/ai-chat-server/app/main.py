@@ -2,7 +2,6 @@ from pathlib import Path
 from dotenv import load_dotenv
 from fastapi import FastAPI
 from app.api.routes.rag_routes import router as rag_routes
-from app.api.routes.book_routes import router as books_routes
 from app.api.routes.chat_routes import router as chat_routes
 from app.api.routes.auth_routes import router as auth_routes
 from fastapi.middleware.cors import CORSMiddleware
@@ -37,7 +36,6 @@ app.add_middleware(
     allow_headers=['*'])
 
 
-app.include_router(books_routes, prefix="/api")
 app.include_router(chat_routes, prefix="/api")
 app.include_router(rag_routes, prefix="/api")
 app.include_router(auth_routes, prefix="/api")

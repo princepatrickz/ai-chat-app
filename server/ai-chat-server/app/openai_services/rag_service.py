@@ -1,10 +1,7 @@
-from importlib.resources import path
-from os import path
 from pathlib import Path
-from uuid import uuid4
 import re
 from sqlalchemy.orm import Session
-from sqlalchemy import func, select
+from sqlalchemy import func
 from app.models.documents import Documents
 from app.models.document_chunks import DocumentChunk
 from app.openai_services.llm_service import create_embedding
@@ -22,30 +19,20 @@ logger = logging.getLogger(__name__)
 
 RETRIEVAL_CACHE_TTL = 300  # 5 minutes
 INDEX_VERSION_KEY = "rag:index_version"
+_INDEX_VERSION_CACHE = {"version": "1", "expires_at": 0}
 
 DOCUMENTS_PATH = (
     Path(__file__).resolve().parent.parent
     / "rag_files"
 )
 
-
+# Split text into overlapping chunks.
 def split_text(
     text: str,
     chunk_size: int = 1000,
     overlap: int = 200,
 ) -> list[str]:
-    """
-    Split text into overlapping chunks.
-
-    Example:
-        chunk_size = 1000
-        overlap = 200
-
-        Chunk 1: characters 0-999
-        Chunk 2: characters 800-1799
-        Chunk 3: characters 1600-2599
-    """
-
+  
     if chunk_size <= 0:
         raise ValueError("chunk_size must be greater than 0")
 
@@ -72,11 +59,9 @@ def split_text(
 
     return chunks
 
+# Split text into sections based on headings. Headings are defined as lines starting with "## "
 def split_by_sections(text: str):
-    """
-    Split text into sections based on headings.
-    Headings are defined as lines starting with "## ".
-    """
+   
     pattern = r"(?m)^##\s+(.+)$"
 
     matches = list(re.finditer(pattern, text))
@@ -104,10 +89,6 @@ async def vector_search(
     query: str,
     top_k: int = 10
 ):
-    """
-    Retrieve document chunks using vector similarity.
-    """
-
     # Create embedding for the search query
     query_embedding = await create_embedding(query)
 
@@ -150,10 +131,7 @@ def keyword_search(
     query: str,
     top_k: int = 10
 ):
-    """
-    Retrieve document chunks using PostgreSQL full-text search.
-    """
-
+    
     search_vector = func.to_tsvector(
         "english",
         DocumentChunk.content
@@ -203,17 +181,9 @@ def reciprocal_rank_fusion(
     keyword_results: list,
     k: int = 60
 ):
-    """
-    Combine vector and keyword search results using
-    Reciprocal Rank Fusion (RRF).
-    """
-
     results = {}
 
-    # ---------------------------------------------------------
     # Process vector results
-    # ---------------------------------------------------------
-
     for rank, result in enumerate(vector_results, start=1):
 
         chunk = result["chunk"]
@@ -232,10 +202,8 @@ def reciprocal_rank_fusion(
         results[chunk_id]["vector_score"] = result["similarity"]
         results[chunk_id]["vector_rank"] = rank
 
-    # ---------------------------------------------------------
-    # Process keyword results
-    # ---------------------------------------------------------
 
+    # Process keyword results
     for rank, result in enumerate(keyword_results, start=1):
 
         chunk = result["chunk"]
@@ -253,10 +221,7 @@ def reciprocal_rank_fusion(
         results[chunk_id]["rrf_score"] += 1 / (k + rank)
         results[chunk_id]["keyword_rank"] = rank
 
-    # ---------------------------------------------------------
     # Sort by RRF score
-    # ---------------------------------------------------------
-
     return sorted(
         results.values(),
         key=lambda x: x["rrf_score"],
@@ -264,72 +229,16 @@ def reciprocal_rank_fusion(
     )
 
 
-# async def retrieve_context(
-#     db: Session,
-#     question: str,
-#     top_k: int = 5,
-# ):
-#     # 1. Fetch knowledge-base version
-#     index_version = await get_index_version()
-#     cache_key = None
-
-#     # 2. Attempt Cache Retrieval
-#     if index_version is not None:
-#         cache_key = build_retrieval_cache_key(
-#             question=question,
-#             top_k=top_k,
-#             index_version=index_version,
-#         )
-
-#         cached_results = await get_retrieval_cache(cache_key)
-
-#         # FAST PATH: Instant Return from Redis (No DB Query!)
-#         if cached_results is not None:
-#             return cached_results
-
-#     # 3. CACHE MISS: Run Hybrid DB Retrieval
-#     vector_results = await vector_search(db=db, query=question, top_k=10)
-#     keyword_results = keyword_search(db=db, query=question, top_k=10)
-
-#     combined_results = reciprocal_rank_fusion(
-#         vector_results=vector_results,
-#         keyword_results=keyword_results,
-#     )
-
-#     final_results = combined_results[:top_k]
-
-#     # 4. Store Complete Payload in Cache (including text & metadata)
-#     if cache_key is not None:
-#         serialized_results = [
-#             {
-#                 # Extract text & metadata into serializable dicts
-#                 "chunk": {
-#                     "id": str(item["chunk"].id),
-#                     "content": item["chunk"].content,
-#                     "metadata": item["chunk"].metadata,
-#                 },
-#                 "rrf_score": item["rrf_score"],
-#                 "vector_score": item["vector_score"],
-#                 "vector_rank": item["vector_rank"],
-#                 "keyword_rank": item["keyword_rank"],
-#             }
-#             for item in final_results
-#         ]
-
-#         await set_retrieval_cache(cache_key, serialized_results)
-
-#     return final_results
-
 async def retrieve_context(
     db: Session,
     question: str,
     top_k: int = 5,
 ):
-    # 1. Fetch knowledge-base version
+    # Fetch knowledge-base version
     index_version = await get_index_version()
     cache_key = None
 
-    # 2. Attempt cache retrieval
+    # Attempt cache retrieval
     if index_version is not None:
         cache_key = build_retrieval_cache_key(
             question=question,
@@ -338,11 +247,11 @@ async def retrieve_context(
         )
 
         cached_results = await get_retrieval_cache(cache_key)
-        
+
         if cached_results is not None:
             return cached_results
 
-    # 3. Run hybrid database retrieval
+    # Run hybrid database retrieval
     vector_results = await vector_search(
         db=db,
         query=question,
@@ -362,7 +271,7 @@ async def retrieve_context(
 
     final_results = combined_results[:top_k]
 
-    # 4. Normalize results into dictionaries
+    # Normalize results into dictionaries
     normalized_results = [
         {
             "chunk": {
@@ -380,7 +289,7 @@ async def retrieve_context(
         for item in final_results
     ]
 
-    # 5. Store normalized results in Redis
+    # Store normalized results in Redis
     if cache_key is not None:
         await set_retrieval_cache(
             cache_key,
@@ -389,10 +298,12 @@ async def retrieve_context(
 
     return normalized_results
 
-_INDEX_VERSION_CACHE = {"version": "1", "expires_at": 0}
+
 
 async def get_index_version() -> str | None:
+    
     now = time.time()
+
     # Read from local memory if unexpired (0 Redis network overhead)
     if now < _INDEX_VERSION_CACHE["expires_at"]:
         return _INDEX_VERSION_CACHE["version"]
@@ -463,9 +374,6 @@ async def set_retrieval_cache(
 
 
 async def bump_index_version() -> None:
-    """
-    Call after a successful knowledge-base database change.
-    """
     try:
         await redis_client.incr(INDEX_VERSION_KEY)
 

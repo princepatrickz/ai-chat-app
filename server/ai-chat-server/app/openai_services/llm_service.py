@@ -43,15 +43,10 @@ NO_CONTEXT_RESPONSE = (
 MAX_TOOL_ROUNDS = 5
 
 
-
 @lru_cache(maxsize=8)
 def load_prompt(filename: str) -> str:
     prompt_path = PROMPTS_DIR / filename
     return prompt_path.read_text(encoding="utf-8")
-
-# def load_prompt(filename: str) -> str:
-#     path = PROMPTS_DIR / filename
-#     return path.read_text(encoding="utf-8")
 
 
 async def create_embedding(text: str) -> list[float]:
@@ -67,7 +62,7 @@ async def create_embedding(text: str) -> list[float]:
 
     cache_key = f"rag:embedding:v1:{model}:{text_hash}"
 
-    # 1. Try Redis first.
+    # Try Redis first.
     try:
         cached_embedding = await redis_client.get(cache_key)
 
@@ -80,7 +75,7 @@ async def create_embedding(text: str) -> list[float]:
             exc_info=True,
         )
 
-    # 2. Cache miss: call OpenAI.
+    # Cache miss: call OpenAI.
     response = await client.embeddings.create(
         model=model,
         input=normalized_text,
@@ -88,7 +83,7 @@ async def create_embedding(text: str) -> list[float]:
 
     embedding = response.data[0].embedding
 
-    # 3. Save the embedding for 24 hours.
+    # Save the embedding for 24 hours.
     try:
         await redis_client.set(
             cache_key,
@@ -103,6 +98,7 @@ async def create_embedding(text: str) -> list[float]:
         )
 
     return embedding
+
 
 async def generate_conversation_title(user_message: str | None) -> str | None:
 
@@ -139,18 +135,18 @@ async def generate_ai_response(
 
     start_time = time.perf_counter()
 
-    # 1. Load cached prompt and retrieve available tools.
+    # Load cached prompt and retrieve available tools.
     instructions = load_prompt("customer_service.txt")
     tools = get_available_tools(current_user)
 
-    # 2. Prepare input.
+    # Prepare input.
     input_items = _prepare_response_input(
         question=question,
         history=history,
         context=context,
     )
 
-    # 3. Answer cache lookup.
+    # Answer cache lookup.
     cache_allowed = current_user is None and not tools
     cache_key = None
 
@@ -181,7 +177,7 @@ async def generate_ai_response(
             except ValidationError:
                 logger.warning("Invalid cached response. Regenerating.")
 
-    # 4. OpenAI execution.
+    # OpenAI execution.
     for round_number in range(MAX_TOOL_ROUNDS):
 
         llm_start = time.perf_counter()
@@ -221,7 +217,6 @@ async def generate_ai_response(
 
                 response_chunks.append(delta)
 
-                # Preserve immediate streaming.
                 yield delta
 
             item = getattr(chunk, "item", None)
@@ -237,7 +232,7 @@ async def generate_ai_response(
             if getattr(item, "type", None) == "function_call"
         ]
 
-        # 5. Final output validation.
+        # Final output validation.
         if not function_calls:
 
             try:
@@ -250,11 +245,9 @@ async def generate_ai_response(
             except ValidationError:
                 logger.exception("Generated response failed validation.")
 
-                # Important: tokens have already been streamed.
-                # This fallback cannot retract previously delivered content.
                 return
 
-            # 6. Cache validated response.
+            # Cache validated response.
             if final_text and cache_key is not None:
 
                 if _should_cache_answer(
@@ -276,7 +269,7 @@ async def generate_ai_response(
 
             return
 
-        # 7. Execute tool calls.
+        # Execute tool calls.
         for tool_call in function_calls:
 
             result = _execute_tool_call(
@@ -294,6 +287,92 @@ async def generate_ai_response(
     yield (
         "I couldn't complete that request within the allowed number "
         "of tool operations. Please try again."
+    )
+
+
+
+
+async def rewrite_question(user_message: str, message_history: list) -> str:
+
+    if not message_history:
+        return user_message.strip()
+
+    history_text = "\n".join(
+        f"{message.role}: {message.content}"
+        for message in message_history
+    )
+
+    instructions = load_prompt("rewrite_question.txt")
+
+    if not instructions:
+        raise ValueError("Failed to load prompt instructions for question rewriting.")
+
+    input_text = f"""
+    CONVERSATION HISTORY:
+    {history_text}
+
+    LATEST USER MESSAGE:
+    {user_message}
+    """
+
+    response = await client.responses.create(
+        model=settings.openai_model,
+        instructions=instructions,
+        input=input_text,
+        max_output_tokens=100
+    )
+
+    return response.output_text.strip()
+
+
+def build_answer_cache_key(
+    question: str,
+    context: str,
+    model: str,
+    instructions: str,
+    history: list[dict[str, Any]],
+) -> str:
+    normalized_question = " ".join(question.strip().lower().split())
+    
+    # Extract only the last user/assistant turn if history exists 
+    # to avoid cache misses on growing array sizes.
+    recent_history = history[-2:] if history else []
+
+    payload = {
+        "question": normalized_question,
+        "context_hash": hashlib.sha256(context.encode("utf-8")).hexdigest(),
+        "model": model,
+        "instructions_hash": hashlib.sha256(instructions.encode("utf-8")).hexdigest(),
+        "recent_history": recent_history,
+    }
+
+    serialized = json.dumps(
+        payload,
+        sort_keys=True,
+        ensure_ascii=False,
+        default=str,
+    )
+
+    digest = hashlib.sha256(
+        serialized.encode("utf-8")
+    ).hexdigest()
+
+    return f"rag:answer:v2:{digest}"
+
+
+
+async def get_cached_answer(cache_key: str) -> str | None:
+    return await get_text_cache(cache_key)
+
+
+async def cache_answer(
+    cache_key: str,
+    answer: str,
+) -> None:
+    await set_text_cache(
+        cache_key,
+        answer,
+        ttl_seconds=ANSWER_CACHE_TTL,
     )
 
 def _prepare_response_input(
@@ -434,93 +513,3 @@ def _history_to_input(
         })
 
     return input_items
-
-
-async def rewrite_question(user_message: str, message_history: list) -> str:
-
-    if not message_history:
-        return user_message.strip()
-
-    history_text = "\n".join(
-        f"{message.role}: {message.content}"
-        for message in message_history
-    )
-
-    instructions = load_prompt("rewrite_question.txt")
-
-    if not instructions:
-        raise ValueError("Failed to load prompt instructions for question rewriting.")
-
-    input_text = f"""
-    CONVERSATION HISTORY:
-    {history_text}
-
-    LATEST USER MESSAGE:
-    {user_message}
-    """
-
-    response = await client.responses.create(
-        model=settings.openai_model,
-        instructions=instructions,
-        input=input_text,
-        max_output_tokens=100
-    )
-
-    return response.output_text.strip()
-
-
-def build_answer_cache_key(
-    question: str,
-    context: str,
-    model: str,
-    instructions: str,
-    history: list[dict[str, Any]],
-) -> str:
-    """
-    Optimized: Prevents full history array serialization explosion 
-    by only looking at the immediate conversational context or restricting 
-    caching to single-turn interactions.
-    """
-    normalized_question = " ".join(question.strip().lower().split())
-    
-    # Extract only the last user/assistant turn if history exists 
-    # to avoid cache misses on growing array sizes.
-    recent_history = history[-2:] if history else []
-
-    payload = {
-        "question": normalized_question,
-        "context_hash": hashlib.sha256(context.encode("utf-8")).hexdigest(), # Hash context to keep payload small
-        "model": model,
-        "instructions_hash": hashlib.sha256(instructions.encode("utf-8")).hexdigest(),
-        "recent_history": recent_history,
-    }
-
-    serialized = json.dumps(
-        payload,
-        sort_keys=True,
-        ensure_ascii=False,
-        default=str,
-    )
-
-    digest = hashlib.sha256(
-        serialized.encode("utf-8")
-    ).hexdigest()
-
-    return f"rag:answer:v2:{digest}"
-
-
-
-
-async def get_cached_answer(cache_key: str) -> str | None:
-    return await get_text_cache(cache_key)
-
-
-async def cache_answer(
-    cache_key: str,
-    answer: str,
-) -> None:
-    await set_text_cache(
-        cache_key,
-        answer,
-        ttl_seconds=ANSWER_CACHE_TTL,
-    )

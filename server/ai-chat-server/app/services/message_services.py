@@ -1,5 +1,4 @@
 from sqlalchemy.orm import Session
-
 from app.models.conversations import Conversations
 from app.models.messages import Messages
 from app.schemas.messages_schema import MessageCreate

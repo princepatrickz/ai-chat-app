@@ -93,47 +93,6 @@ def get_current_user(
 
     return user
 
-# async def get_optional_current_user(
-#     credentials: HTTPAuthorizationCredentials | None = Depends(security),
-#     db: Session = Depends(get_db),
-# ) -> User | None:
-
-#     # Allow anonymous users.
-#     if credentials is None:
-#         return None
-
-#     try:
-#         payload = jwt.decode(
-#             credentials.credentials,
-#             SECRET_KEY,
-#             algorithms=[ALGORITHM],
-#             options={"require": ["sub", "exp"]},
-#         )
-
-#         user_id = payload.get("sub")
-
-#         if not user_id:
-#             raise HTTPException(
-#                 status_code=status.HTTP_401_UNAUTHORIZED,
-#                 detail="Invalid access token",
-#             )
-
-#         user = db.query(User).filter(User.id == user_id).first()
-
-#         if user is None:
-#             raise HTTPException(
-#                 status_code=status.HTTP_401_UNAUTHORIZED,
-#                 detail="User not found",
-#             )
-
-#         return user
-
-#     except Exception:
-#         raise HTTPException(
-#             status_code=status.HTTP_401_UNAUTHORIZED,
-#             detail="Invalid or expired access token",
-#         )
-
 
 async def get_optional_current_user(
     credentials: HTTPAuthorizationCredentials | None = Depends(security),

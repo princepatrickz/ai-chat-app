@@ -1,10 +1,10 @@
 import os
 from uuid import UUID
 from fastapi import APIRouter, Depends, HTTPException
-from fastapi.responses import PlainTextResponse, StreamingResponse
+from fastapi.responses import PlainTextResponse
 from sqlalchemy.orm import Session
 from app.db import get_db
-from app.schemas.conversations_schema import Conversations, ConversationsCreate
+from app.schemas.conversations_schema import Conversations
 from app.schemas.messages_schema import Message
 from app.services import chat_services
 from app.schemas.chat_schema import ChatRequest

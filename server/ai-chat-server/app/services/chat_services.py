@@ -44,13 +44,31 @@ async def start_conversation(db: Session):
         raise
 
 
+async def get_messages_conversation_id(db: Session,id: UUID):
+
+    return (
+        db.query(Messages)
+        .filter(Messages.conversation_id == id)
+        .order_by(Messages.created_at.asc())
+        .all()
+    )
+
+
+async def get_conversation(db: Session, id: UUID):
+
+    return (
+        db.query(Conversations)
+        .filter(Conversations.id == id)
+        .first()
+    )
+
 
 async def process_message(
     db: Session,
     data: ChatRequest,
     current_user: User | None,
 ):
-    # 1. Validate the user message.
+    # Validate the user message.
 
     user_text = (data.message or "").strip()
 
@@ -60,17 +78,14 @@ async def process_message(
             "message": "Please enter a message before sending.",
         }
 
-
-    # 2. Retrieve previous conversation history.
-
+    # Retrieve previous conversation history.
     message_history = await retrieve_messages(
         db=db,
         conversation_id=data.conversation_id,
         limit=10,
     )
 
-    # 3. Save the user's message.
-
+    # Save the user's message.
     user_message = MessageCreate(
         conversation_id=data.conversation_id,
         role="user",
@@ -82,42 +97,36 @@ async def process_message(
         data=user_message,
     )
 
-    # 4. Rewrite the question for RAG retrieval.
-
+    # Rewrite the question for RAG retrieval.
     search_query = await rewrite_question(
         user_message=user_text,
         message_history=message_history,
     )
 
-    # 5. Retrieve relevant knowledge-base chunks.
-
+    # Retrieve relevant knowledge-base chunks.
     retrieved_chunks = await retrieve_context(
         db=db,
         question=search_query,
         top_k=5,
     )
 
-    # Saving an empty retrieval list should be supported by this helper.
     await save_message_retrievals(
         db,
         message.id,
         retrieved_chunks,
     )
 
-    # 6. Build context, including the empty-context case.
+    # Build context, including the empty-context case.
 
     if retrieved_chunks:
-        context = build_rag_context(retrieved_chunks)
+        context = _build_rag_context(retrieved_chunks)
     else:
         context = ""
 
-    # Do not return NO_CONTEXT_RESPONSE here.
-    # The LLM may still be able to answer with an authorized database tool.
 
-    # 7. Stream the response.
-
+    # Stream the response.
     async def generate():
-        assistant_message = await save_assistant_message(
+        assistant_message = await _save_assistant_message(
             db=db,
             conversation_id=data.conversation_id,
             content="",
@@ -156,7 +165,6 @@ async def process_message(
                 })}\n\n"
 
             # Save the final content to the same assistant message.
-
             stored_message = (
                 db.query(Messages)
                 .filter(Messages.id == assistant_message.id)
@@ -226,7 +234,9 @@ async def process_message(
 #     )
 
 
-def build_rag_context(retrieved_chunks: list) -> str:
+# Private functions
+
+def _build_rag_context(retrieved_chunks: list) -> str:
 
     return "\n\n".join(
         (
@@ -238,7 +248,9 @@ def build_rag_context(retrieved_chunks: list) -> str:
     )
 
 
-async def save_assistant_message(db: Session,conversation_id: UUID,content: str) -> Messages:
+
+
+async def _save_assistant_message(db: Session,conversation_id: UUID,content: str) -> Messages:
 
     assistant_message = MessageCreate(
         conversation_id=conversation_id,
@@ -253,24 +265,3 @@ async def save_assistant_message(db: Session,conversation_id: UUID,content: str)
     )
 
     return message
-
-
-
-
-async def get_messages_conversation_id(db: Session,id: UUID):
-
-    return (
-        db.query(Messages)
-        .filter(Messages.conversation_id == id)
-        .order_by(Messages.created_at.asc())
-        .all()
-    )
-
-
-async def get_conversation(db: Session, id: UUID):
-
-    return (
-        db.query(Conversations)
-        .filter(Conversations.id == id)
-        .first()
-    )
