@@ -22,33 +22,8 @@ import { FaBookOpenReader } from "react-icons/fa6";
 import { TiMessages } from "react-icons/ti";
 import { RiNetworkFill } from "react-icons/ri";
 import { ToastContainer } from "react-toastify";
-
-var navLinks = [
-  {
-    id: 1,
-    url: "/home",
-    label: "DASHBOARD",
-    //roles: [ROLES.Admin, ROLES.User],
-  },
-  {
-    id: 2,
-    url: "/asset-inventory",
-    label: "ASSET INVENTORY",
-    //roles: [ROLES.Admin, ROLES.User],
-  },
-  {
-    id: 3,
-    url: "/asset-management",
-    label: "ASSET MANAGEMENT",
-    //roles: [ROLES.Admin, ROLES.User],
-  },
-  {
-    id: 4,
-    url: "/procurement",
-    label: "PROCUREMENT",
-    //roles: [ROLES.User],
-  },
-];
+import { useSelector, useDispatch } from "react-redux";
+import { clearCredentials } from "../auth/authSlice";
 
 const navItems = [
   { label: "Dashboard", icon: <MdDashboard />, path: "/admin/dashboard" },
@@ -85,32 +60,25 @@ const getDropdownNav = (show, setShow, onLogout) => [
     url: "my-account",
     icon: <FaUserCog className={`${style["dropdown-icons"]} me-1`} />,
     label: "My Account",
-    //roles: [ROLES.User],
-    // function: () => {
-    //   if (show) setShow((prev) => !prev);
-    // },
   },
   {
     id: 2,
     url: "/account/user-management",
     icon: <FaUserShield className={`${style["dropdown-icons"]} me-1`} />,
     label: "Account Management",
-    //roles: [ROLES.Admin],
   },
   {
     id: 3,
     url: "settings",
     icon: <IoMdSettings className={`${style["dropdown-icons"]} me-1`} />,
     label: "Settings",
-    //roles: [ROLES.User],
   },
   {
     id: 4,
     url: "",
     icon: <TbLogout className={`${style["dropdown-icons"]} me-1`} />,
     label: "Logout",
-    //roles: [],
-    //function: onLogout,
+    function: onLogout,
   },
 ];
 
@@ -120,7 +88,7 @@ const Layout = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isMobile, setIsMobile] = useState();
   const [isTablet, setIsTablet] = useState();
-
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -146,7 +114,13 @@ const Layout = () => {
     isTablet ? setShow(false) : setShow(true);
   }, [isTablet]);
 
-  const dropdownNav = getDropdownNav(show, setShow);
+  const onLogout = () => {
+    localStorage.clear();
+    dispatch(clearCredentials());
+    navigate("/login");
+  };
+
+  const dropdownNav = getDropdownNav(show, setShow, onLogout);
 
   return (
     <div className={`${style["container"]} `}>

@@ -40,8 +40,6 @@ const LoginPage = () => {
 
       const user = await getUser().unwrap();
 
-      //var data = JSON.parse(response);
-
       var obj = {
         firstname: user.firstname,
         lastname: user.lastname,
@@ -135,7 +133,9 @@ const LoginPage = () => {
               </div>
             </button>
           ) : (
-            <button type="submit">Sign in</button>
+            <button type="submit" className={style["submit-button"]}>
+              Sign in
+            </button>
           )}
 
           <div className={style["form-footer"]}>

@@ -1,8 +1,5 @@
 import react, { useEffect, useState } from "react";
-import {
-  useStartConversationMutation,
-  useSendMessageMutation,
-} from "../hooks/api/chatApi";
+import { useStartConversationMutation } from "../hooks/api/chatApi";
 import { useSelector } from "react-redux";
 
 export const useChatHook = () => {
@@ -10,7 +7,7 @@ export const useChatHook = () => {
   const [message, setMessage] = useState("");
   const [startConversation, { isLoading: initializing }] =
     useStartConversationMutation();
-  //onst [sendMessage, { isLoading }] = useSendMessageMutation();
+
   const [isLoading, setIsloading] = useState(false);
 
   const user = useSelector((state) => state.auth);
