@@ -100,16 +100,16 @@ Personal/live data requests are different from knowledge-base gaps and should be
 
 ## Evaluation
 
-DeepEval run dated 2026-11-01; 30 golden cases:
+DeepEval run dated 2026-11-04; 30 golden cases:
 
 | Metric               |   Result | Cases |
 | -------------------- | -------: | ----: |
 | Faithfulness         |    1.000 |    30 |
-| Answer relevancy     |    0.857 |    30 |
+| Answer relevancy     |    0.852 |    30 |
 | Contextual precision |    0.971 |    19 |
-| Contextual recall    |    0.930 |    19 |
-| Latency p50          | 1,605 ms |    30 |
-| Latency p95          | 4,093 ms |    30 |
+| Contextual recall    |    0.929 |    19 |
+| Latency p50          | 1,561 ms |    30 |
+| Latency p95          | 2,238 ms |    30 |
 
 Contextual metrics were scored on the 19 answerable cases. Results are dataset-specific, not proof that hallucinations or security defects are impossible. Known follow-ups include correcting the GS-026 reference answer, reviewing GS-015, improving concise/direct answers, investigating the GS-001 latency outlier, and adding abstention, prompt-injection, and cross-user isolation tests.
 
